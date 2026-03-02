@@ -34,17 +34,76 @@ wall3 = Entity(model='cube', scale=(wall_thickness, wall_height, arena_size),
 wall4 = Entity(model='cube', scale=(wall_thickness, wall_height, arena_size),
                position=(-arena_size/2, wall_height/2, 0), collider='box')
 
-enemies = []
+
 ##Enemy Spawning
+
+class Enemy(Entity):
+    def __init__(self, position=(0,0,0)):
+        super().__init__(
+            position=position,
+            collider='box'
+        )
+
+        # Body (Torso)
+        self.body = Entity(
+            parent=self,
+            model='cube',
+            scale=(1,1.5,0.5),
+            color=color.red,
+            y=1
+        )
+
+        # Head
+        self.head = Entity(
+            parent=self,
+            model='cube',
+            scale=(0.6,0.6,0.6),
+            color=color.orange,
+            y=2.2
+        )
+
+        # Left Arm
+        self.left_arm = Entity(
+            parent=self,
+            model='cube',
+            scale=(0.3,1.2,0.3),
+            color=color.red,
+            position=(-0.8,1.2,0)
+        )
+
+        # Right Arm
+        self.right_arm = Entity(
+            parent=self,
+            model='cube',
+            scale=(0.3,1.2,0.3),
+            color=color.red,
+            position=(0.8,1.2,0)
+        )
+
+        # Left Leg
+        self.left_leg = Entity(
+            parent=self,
+            model='cube',
+            scale=(0.4,1.2,0.4),
+            color=color.blue,
+            position=(-0.3,0,0)
+        )
+
+        # Right Leg
+        self.right_leg = Entity(
+            parent=self,
+            model='cube',
+            scale=(0.4,1.2,0.4),
+            color=color.blue,
+            position=(0.3,0,0)
+        )
+        
+enemies = []
 for i in range(5):
-    enemy = Entity(
-        model='cube',
-        color=color.red,
-        scale=(1,2,1),
-        position=(random.randint(-10,10),1,random.randint(-10,10)),
-        collider='box'
-    )
-    enemies.append(enemy)
+    enemy = Enemy(position=(random.randint(-10,10),0,random.randint(-10,10)))
+    enemies.append(enemy)    
+    
+        
 ## Raycasting 
 def input(key):
     if key == 'left mouse down':
