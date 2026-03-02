@@ -60,14 +60,31 @@ def input(key):
                 enemies.remove(hit_info.entity)   
 
 ##Crosshair
-crosshair = Entity(
-    parent=camera.ui,
-    model='circle',
-    color=color.clear,
-    scale=0.03
-)
-crosshair.outline_color = color.white         
-                
+crosshair_parts = []
+
+thickness = 0.002
+length = 0.02
+gap = 0.01
+
+# Top
+crosshair_parts.append(Entity(parent=camera.ui, model='quad',
+    scale=(thickness, length),
+    position=(0, gap, -0.1)))
+
+# Bottom
+crosshair_parts.append(Entity(parent=camera.ui, model='quad',
+    scale=(thickness, length),
+    position=(0, -gap, -0.1)))
+
+# Left
+crosshair_parts.append(Entity(parent=camera.ui, model='quad',
+    scale=(length, thickness),
+    position=(-gap, 0, -0.1)))
+
+# Right
+crosshair_parts.append(Entity(parent=camera.ui, model='quad',
+    scale=(length, thickness),
+    position=(gap, 0, -0.1)))
 
 
 
