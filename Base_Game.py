@@ -13,7 +13,7 @@ ground = Entity(
     model='cube',
     scale=(30,1,30),
     position=(0,-0.5,0),
-    color=color.gray,
+    color=color.yellow,
     collider='box'
 )
 
@@ -62,11 +62,11 @@ def input(key):
 ##Crosshair
 crosshair = Entity(
     parent=camera.ui,
-    model='quad',
-    color=color.black,
-    scale=0.01,
-    position=(0,0,0)
-)                
+    model='circle',
+    color=color.clear,
+    scale=0.03
+)
+crosshair.outline_color = color.white         
                 
 
 
