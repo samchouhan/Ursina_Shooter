@@ -81,7 +81,7 @@ class Enemy(Entity):
                                 position=(0.3,0,0),
                                 color=color.blue,
                                 collider='box')
-
+###------Enemy Damage System------###
     def take_damage(self, amount):
         self.health -= amount
         print("Enemy Health:", self.health)
@@ -159,3 +159,4 @@ def input(key):
                 else:
                     enemy.take_damage(25)
 app.run()
+
