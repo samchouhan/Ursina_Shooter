@@ -105,8 +105,11 @@ for i in range(5):
     
         
 ## Raycasting 
+
 def input(key):
+
     if key == 'left mouse down':
+
         hit_info = raycast(
             camera.world_position,
             camera.forward,
@@ -114,10 +117,13 @@ def input(key):
         )
 
         if hit_info.hit:
-            if hit_info.entity in enemies:
-                destroy(hit_info.entity)
-                enemies.remove(hit_info.entity)   
 
+            target = hit_info.entity
+
+            if target.parent in enemies:
+                destroy(target.parent)
+                enemies.remove(target.parent)
+                
 ##Crosshair
 crosshair_parts = []
 
