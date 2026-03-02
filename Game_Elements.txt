@@ -1,0 +1,16 @@
+###
+Elements Used in game BUILDING...
+
+3D coordinates
+
+Collision detection
+
+Raycasting
+
+Event handling
+
+UI elements
+
+Game state logic
+
+###
