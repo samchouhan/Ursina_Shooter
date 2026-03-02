@@ -40,6 +40,8 @@ class Enemy(Entity):
     def __init__(self, position=(0,0,0)):
         super().__init__(position=position)
 
+        self.health = 100
+
         # Body
         self.body = Entity(parent=self, model='cube',
                            scale=(1,1.5,0.5),
@@ -47,46 +49,51 @@ class Enemy(Entity):
                            y=1,
                            collider='box')
 
-        # Head
+        # Head (important: name it clearly)
         self.head = Entity(parent=self, model='cube',
                            scale=(0.6,0.6,0.6),
                            color=color.orange,
                            y=2.2,
                            collider='box')
 
-        # Left Arm
+        # Arms
         self.left_arm = Entity(parent=self, model='cube',
                                scale=(0.3,1.2,0.3),
                                position=(-0.8,1.2,0),
                                color=color.red,
                                collider='box')
 
-        # Right Arm
         self.right_arm = Entity(parent=self, model='cube',
                                 scale=(0.3,1.2,0.3),
                                 position=(0.8,1.2,0),
                                 color=color.red,
                                 collider='box')
 
-        # Left Leg
+        # Legs
         self.left_leg = Entity(parent=self, model='cube',
                                scale=(0.4,1.2,0.4),
                                position=(-0.3,0,0),
                                color=color.blue,
                                collider='box')
 
-        # Right Leg
         self.right_leg = Entity(parent=self, model='cube',
                                 scale=(0.4,1.2,0.4),
                                 position=(0.3,0,0),
                                 color=color.blue,
                                 collider='box')
 
+    def take_damage(self, amount):
+        self.health -= amount
+        print("Enemy Health:", self.health)
+
+        if self.health <= 0:
+            destroy(self)
+            enemies.remove(self)
 
 # ---------------- SPAWN ENEMIES ----------------
 enemies = []
 
-for i in range(5):
+for i in range(10):
     enemy = Enemy(
         position=(random.randint(-10,10),0,random.randint(-10,10))
     )
@@ -140,6 +147,15 @@ def input(key):
             target = hit_info.entity
 
             if target.parent in enemies:
-                destroy(target.parent)
-                enemies.remove(target.parent)
+
+                enemy = target.parent
+
+                # HEADSHOT
+                if target == enemy.head:
+                    print("HEADSHOT!")
+                    enemy.take_damage(100)
+
+                # BODY / LIMB SHOT
+                else:
+                    enemy.take_damage(25)
 app.run()
