@@ -1,111 +1,130 @@
-#This is the Base Game code and now we can make alterations to it to make it more fun and enjoyable. We can add more enemies, different types of enemies, power-ups, and more.
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
+import random
 
 app = Ursina()
 
-# Player
+# ---------------- PLAYER ----------------
 player = FirstPersonController()
 player.gravity = 1
 
-# Ground (solid cube, not plane)
+
+# ---------------- ARENA ----------------
 ground = Entity(
     model='cube',
     scale=(30,1,30),
     position=(0,-0.5,0),
-    color=color.yellow,
+    color=color.gray,
     collider='box'
 )
 
-# Walls
 wall_thickness = 1
 wall_height = 5
 arena_size = 30
 
-wall1 = Entity(model='cube', scale=(arena_size, wall_height, wall_thickness),
-               position=(0, wall_height/2, arena_size/2), collider='box')
+Entity(model='cube', scale=(arena_size, wall_height, wall_thickness),
+       position=(0, wall_height/2, arena_size/2), collider='box')
 
-wall2 = Entity(model='cube', scale=(arena_size, wall_height, wall_thickness),
-               position=(0, wall_height/2, -arena_size/2), collider='box')
+Entity(model='cube', scale=(arena_size, wall_height, wall_thickness),
+       position=(0, wall_height/2, -arena_size/2), collider='box')
 
-wall3 = Entity(model='cube', scale=(wall_thickness, wall_height, arena_size),
-               position=(arena_size/2, wall_height/2, 0), collider='box')
+Entity(model='cube', scale=(wall_thickness, wall_height, arena_size),
+       position=(arena_size/2, wall_height/2, 0), collider='box')
 
-wall4 = Entity(model='cube', scale=(wall_thickness, wall_height, arena_size),
-               position=(-arena_size/2, wall_height/2, 0), collider='box')
+Entity(model='cube', scale=(wall_thickness, wall_height, arena_size),
+       position=(-arena_size/2, wall_height/2, 0), collider='box')
 
 
-##Enemy Spawning
-
+# ---------------- ENEMY CLASS ----------------
 class Enemy(Entity):
     def __init__(self, position=(0,0,0)):
-        super().__init__(
-            position=position,
-            collider='box'
-        )
+        super().__init__(position=position)
 
-        # Body (Torso)
-        self.body = Entity(
-            parent=self,
-            model='cube',
-            scale=(1,1.5,0.5),
-            color=color.red,
-            y=1
-        )
+        # Body
+        self.body = Entity(parent=self, model='cube',
+                           scale=(1,1.5,0.5),
+                           color=color.red,
+                           y=1,
+                           collider='box')
 
         # Head
-        self.head = Entity(
-            parent=self,
-            model='cube',
-            scale=(0.6,0.6,0.6),
-            color=color.orange,
-            y=2.2
-        )
+        self.head = Entity(parent=self, model='cube',
+                           scale=(0.6,0.6,0.6),
+                           color=color.orange,
+                           y=2.2,
+                           collider='box')
 
         # Left Arm
-        self.left_arm = Entity(
-            parent=self,
-            model='cube',
-            scale=(0.3,1.2,0.3),
-            color=color.red,
-            position=(-0.8,1.2,0)
-        )
+        self.left_arm = Entity(parent=self, model='cube',
+                               scale=(0.3,1.2,0.3),
+                               position=(-0.8,1.2,0),
+                               color=color.red,
+                               collider='box')
 
         # Right Arm
-        self.right_arm = Entity(
-            parent=self,
-            model='cube',
-            scale=(0.3,1.2,0.3),
-            color=color.red,
-            position=(0.8,1.2,0)
-        )
+        self.right_arm = Entity(parent=self, model='cube',
+                                scale=(0.3,1.2,0.3),
+                                position=(0.8,1.2,0),
+                                color=color.red,
+                                collider='box')
 
         # Left Leg
-        self.left_leg = Entity(
-            parent=self,
-            model='cube',
-            scale=(0.4,1.2,0.4),
-            color=color.blue,
-            position=(-0.3,0,0)
-        )
+        self.left_leg = Entity(parent=self, model='cube',
+                               scale=(0.4,1.2,0.4),
+                               position=(-0.3,0,0),
+                               color=color.blue,
+                               collider='box')
 
         # Right Leg
-        self.right_leg = Entity(
-            parent=self,
-            model='cube',
-            scale=(0.4,1.2,0.4),
-            color=color.blue,
-            position=(0.3,0,0)
-        )
-        
-enemies = []
-for i in range(5):
-    enemy = Enemy(position=(random.randint(-10,10),0,random.randint(-10,10)))
-    enemies.append(enemy)    
-    
-        
-## Raycasting 
+        self.right_leg = Entity(parent=self, model='cube',
+                                scale=(0.4,1.2,0.4),
+                                position=(0.3,0,0),
+                                color=color.blue,
+                                collider='box')
 
+
+# ---------------- SPAWN ENEMIES ----------------
+enemies = []
+
+for i in range(5):
+    enemy = Enemy(
+        position=(random.randint(-10,10),0,random.randint(-10,10))
+    )
+    enemies.append(enemy)
+
+
+# ---------------- CROSSHAIR ----------------
+# ---------------- CLASSIC CROSSHAIR ----------------
+thickness = 0.003
+length = 0.02
+gap = 0.015
+
+# Top
+Entity(parent=camera.ui, model='quad',
+       scale=(thickness, length),
+       position=(0, gap, -0.1),
+       color=color.black)
+
+# Bottom
+Entity(parent=camera.ui, model='quad',
+       scale=(thickness, length),
+       position=(0, -gap, -0.1),
+       color=color.black)
+
+# Left
+Entity(parent=camera.ui, model='quad',
+       scale=(length, thickness),
+       position=(-gap, 0, -0.1),
+       color=color.black)
+
+# Right
+Entity(parent=camera.ui, model='quad',
+       scale=(length, thickness),
+       position=(gap, 0, -0.1),
+       color=color.black)
+
+
+# ---------------- SHOOTING SYSTEM ----------------
 def input(key):
 
     if key == 'left mouse down':
@@ -123,34 +142,4 @@ def input(key):
             if target.parent in enemies:
                 destroy(target.parent)
                 enemies.remove(target.parent)
-                
-##Crosshair
-crosshair_parts = []
-
-thickness = 0.002
-length = 0.02
-gap = 0.01
-
-# Top
-crosshair_parts.append(Entity(parent=camera.ui, model='quad',
-    scale=(thickness, length),
-    position=(0, gap, -0.1)))
-
-# Bottom
-crosshair_parts.append(Entity(parent=camera.ui, model='quad',
-    scale=(thickness, length),
-    position=(0, -gap, -0.1)))
-
-# Left
-crosshair_parts.append(Entity(parent=camera.ui, model='quad',
-    scale=(length, thickness),
-    position=(-gap, 0, -0.1)))
-
-# Right
-crosshair_parts.append(Entity(parent=camera.ui, model='quad',
-    scale=(length, thickness),
-    position=(gap, 0, -0.1)))
-
-
-
 app.run()
