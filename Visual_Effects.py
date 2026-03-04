@@ -10,8 +10,10 @@ player.gravity = 1
 
 player.speed = 5
 player.jump_height = 1.5
-
-
+player.walking_speed = 5
+player.running_speed = 12
+player.mouse_sensitivity = Vec2(40, 40)
+player.power_ups = player.running_speed=25 # Example power-up that increases running speed
 
 # ---------------- CAMERA SHAKE ----------------
 def camera_shake(intensity=0.2, duration=0.2):
@@ -312,6 +314,16 @@ def input(key):
         current_weapon_index = 2
         current_weapon = weapons[current_weapon_index]
         print("Switched to:", current_weapon.name)
-
+    #Sprint Start
+    if key == 'shift':
+        player.speed = player.running_speed
+    #Sprint End
+    if key == 'shift up':
+        player.speed = player.walking_speed   
+        
+    #Power-up activation example
+    if key == 'x':
+        # Press 'x' to activate power-up     
+        player.running_speed = 25
 
 app.run()
