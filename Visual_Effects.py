@@ -8,6 +8,10 @@ app = Ursina()
 player = FirstPersonController()
 player.gravity = 1
 
+player.speed = 5
+player.jump_height = 1.5
+
+
 
 # ---------------- CAMERA SHAKE ----------------
 def camera_shake(intensity=0.2, duration=0.2):
@@ -212,15 +216,102 @@ class Fireball(Entity):
         self.lifetime -= time.dt
         if self.lifetime <= 0:
             destroy(self)
+# ---------------- WEAPON ----------------
+class Weapon():
+    def __init__(self, name):
+        self.name = name
+        
+    def shoot(self):
+        pass  # Implement shooting logic here  
+    
+class FireballWeapon(Weapon):
+    def __init__(self):
+        super().__init__("Fireball")
 
-
-# ---------------- INPUT ----------------
-def input(key):
-    if key == 'left mouse down':
+    def shoot(self):
         Fireball(
             position=camera.world_position + camera.forward * 1.5,
             direction=camera.forward
+        )      
+        
+class RifleWeapon(Weapon):
+    def __init__(self):
+        super().__init__("Rifle")
+
+    def shoot(self):
+
+        hit_info = raycast(
+            camera.world_position,
+            camera.forward,
+            distance=100
         )
+
+        if hit_info.hit:
+
+            if hit_info.entity and hit_info.entity.parent in enemies:
+                hit_info.entity.parent.take_damage(25)
+
+            Explosion(position=hit_info.point)
+            camera_shake(0.1, 0.1)      
+            
+            
+class ShotgunWeapon(Weapon):
+    def __init__(self):
+        super().__init__("Shotgun")
+
+    def shoot(self):
+
+        for i in range(6):  # 6 pellets
+
+            spread = Vec3(
+                random.uniform(-0.05, 0.05),
+                random.uniform(-0.05, 0.05),
+                0
+            )
+
+            direction = (camera.forward + spread).normalized()
+
+            hit_info = raycast(
+                camera.world_position,
+                direction,
+                distance=50
+            )
+
+            if hit_info.hit:
+                if hit_info.entity and hit_info.entity.parent in enemies:
+                    hit_info.entity.parent.take_damage(15)
+
+                Explosion(position=hit_info.point)
+
+        camera_shake(.1,.1)           
+# ---------------- Weapon Switch ----------------
+weapons = [FireballWeapon(), RifleWeapon(), ShotgunWeapon()]
+
+current_weapon_index = 0
+current_weapon = weapons[current_weapon_index]
+
+# ---------------- INPUT ----------------
+def input(key):
+
+    global current_weapon_index, current_weapon
+
+    if key == 'left mouse down':
+        current_weapon.shoot()
+
+    if key == '1':
+        current_weapon_index = 0
+        current_weapon = weapons[current_weapon_index]
+        print("Switched to:", current_weapon.name)
+
+    if key == '2':
+        current_weapon_index = 1
+        current_weapon = weapons[current_weapon_index]
+        print("Switched to:", current_weapon.name)
+
+    if key == '3':
+        current_weapon_index = 2
+        current_weapon = weapons[current_weapon_index]
+        print("Switched to:", current_weapon.name)
 
 
 app.run()
