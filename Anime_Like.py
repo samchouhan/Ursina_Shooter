@@ -44,7 +44,7 @@ ground = Entity(
     model='cube',
     scale=(arena_size, 1, arena_size),
     position=(0, -0.5, 0),
-    color=color.gray,
+    color=color.light_gray,
     collider='box'
 )
 
@@ -327,6 +327,7 @@ def input(key):
 
     if key == 'shift up':
         player.speed = player.walk_speed
+
 
 
 app.run()
