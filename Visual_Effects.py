@@ -1,3 +1,4 @@
+#This code is exclusively for making changes to the visual effects of the game
 from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 import random
