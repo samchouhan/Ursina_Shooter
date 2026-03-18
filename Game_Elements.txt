@@ -13,4 +13,6 @@ UI elements
 
 Game state logic
 
+Visual Effects
+
 ###
