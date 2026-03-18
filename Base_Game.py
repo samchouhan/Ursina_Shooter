@@ -20,7 +20,7 @@ ground = Entity(
 
 wall_thickness = 1
 wall_height = 5
-arena_size = 30
+arena_size = 50
 
 Entity(model='cube', scale=(arena_size, wall_height, wall_thickness),
        position=(0, wall_height/2, arena_size/2), collider='box')
